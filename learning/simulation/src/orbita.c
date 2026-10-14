@@ -1,26 +1,23 @@
 #include <stdio.h>
 #include <stddef.h>
 #include <math.h>
-#include <unistd.h>
 
 #define GRAVITATIONAL_CT (6.674e-11)
 #define EARTH_MASS (5.972e24)
 #define MOON_MASS (7.342e22)
 
-#define X_EARTH_INITIAL (-4.668e6);
-#define Y_EARTH_INITIAL (0.0);
-#define X_MOON_INITIAL (3.797e8);
-#define Y_MOON_INITIAL (0.0);
+#define X_EARTH_INITIAL (-4.668e6)
+#define Y_EARTH_INITIAL (0.0)
+#define X_MOON_INITIAL (3.797e8)
+#define Y_MOON_INITIAL (0.0)
 
-#define V_X_EARTH_INITIAL (0.0);
-#define V_Y_EARTH_INITIAL (-12.44);
-#define V_X_MOON_INITIAL (0.0);
-#define V_Y_MOON_INITIAL (1012.06);
+#define V_X_EARTH_INITIAL (0.0)
+#define V_Y_EARTH_INITIAL (-12.44)
+#define V_X_MOON_INITIAL (0.0)
+#define V_Y_MOON_INITIAL (1012.06)
 
-#define RADIUS (3.844e8)
-
-#define TIME_CHANGE (60)
-#define NR_STEPS (10)
+#define TIME_CHANGE (60.0)
+#define NR_STEPS (39300)
 
 int main(void)
 {
@@ -68,9 +65,7 @@ int main(void)
 		printf("Position: (x, y) = (%e, %e)\n", x_earth, y_earth);
 		printf("Moon data:\n");
 		printf("Position: (x, y) = (%e, %e)\n", x_moon, y_moon);
-
-		sleep(1);
 	}
-
 	return 0;
 }
+
