@@ -3,5 +3,6 @@
 
 *In progress...*
 
-- Check the serenity-plan.html file for more details.
+Right now I am working inside the [`learning`](./learning) directory. Feel free
+to explore it.
 
