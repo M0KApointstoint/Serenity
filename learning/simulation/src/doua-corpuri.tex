@@ -1,4 +1,4 @@
-% Serenity: suport teoretic. Problema celor N corpuri, particularizata pentru N = 2.
+% Serenity: suport teoretic. Problema celor n corpuri, particularizata pentru n = 2.
 % Compilare: pdflatex doua-corpuri.tex
 \documentclass[11pt,a4paper]{article}
 \usepackage[T1]{fontenc}
@@ -14,6 +14,7 @@
 \captionsetup[table]{name=Tabelul}
 \usepackage{tikz}
 \usetikzlibrary{arrows.meta,calc}
+\setlength{\emergencystretch}{2em} % evita randurile prea lungi (fara despartire in silabe pentru romana)
 
 % Culori comune pentru desene
 \definecolor{corp1}{RGB}{40,110,200}
@@ -30,12 +31,6 @@
   corpB/.style={circle, fill=corp2, draw=corp2!60!black, minimum size=3.6mm, inner sep=0},
 }
 
-\newtheorem{propozitie}{Propoziția}
-\newtheorem{definitie}{Definiția}
-\theoremstyle{remark}
-\newtheorem*{obs}{Observație}
-\renewcommand{\proofname}{Demonstrație}
-
 \newcommand{\vr}{\vec r}
 \newcommand{\vv}{\vec v}
 \newcommand{\va}{\vec a}
@@ -44,58 +39,63 @@
 \newcommand{\od}[1]{\frac{d #1}{d t}}
 \newcommand{\odd}[1]{\frac{d^{2} #1}{d t^{2}}}
 
-\title{Problema celor $N$ corpuri,\\ particularizată pentru $N = 2$}
-\author{Cristian-Lucian Mocanu\\[2pt]
-  \small cu asistența lui Claude (Anthropic), model \texttt{claude-opus-5-5}}
+\title{Problema celor $n$ corpuri,\\ particularizată pentru $n = 2$}
+\author{Cristian-Lucian Mocanu}
 \date{Octombrie 2026}
 
 \begin{document}
 \maketitle
 
+\section*{Notă privind redactarea}
+Codul \LaTeX{} al acestui document a fost scris integral de Claude, un model de inteligență artificială dezvoltat de Anthropic (\texttt{claude-opus-5-5}). Conținutul a trecut prin modificări succesive, făcute pe baza observațiilor autorului: structura, nivelul de rigoare, notațiile și terminologia au fost stabilite de autor, care a verificat și a aprobat fiecare versiune.
 
 \section*{Scop}
-Acest document este suportul teoretic pentru \textbf{Serenity}, un accelerator hardware pentru calculul forțelor gravitaționale în simulări de tip $N$ corpuri. Formulăm problema generală, o particularizăm pentru $N = 2$ și arătăm cum devine un calcul numeric. Încheiem cu un exemplu de simulare: sistemul Pământ--Lună.
+Acest document este suportul teoretic pentru \textbf{Serenity}, un accelerator hardware pentru calculul forțelor gravitaționale în simulări de tip $n$ corpuri. Formulăm problema generală, o particularizăm pentru $n = 2$ și arătăm cum devine un calcul numeric. Încheiem cu un exemplu de simulare: sistemul Pământ--Lună.
 
 În interiorul modelului nu facem aproximații. Ele apar doar în două locuri, numite explicit: pasul de timp al calculului numeric (Secțiunea~\ref{sec:numeric}) și constantele și condițiile inițiale din exemplu (Secțiunea~\ref{sec:exemplu}).
 
 \section{Modelul}\label{sec:model}
 \begin{enumerate}[label=(I\arabic*)]
-  \item Sistemul este format din $N \ge 2$ \emph{puncte materiale}. Corpul $i$ are masa $m_i$ și poziția $\vr_i(t)$, măsurată într-un referențial inerțial.
+  \item Sistemul este format din $n$ \emph{puncte materiale}, unde $n \in \mathbb{N}$, $n \ge 2$. Corpurile sunt numerotate cu indicele $i \in \{1, 2, \dots, n\}$: fiecare valoare a lui $i$ desemnează unul și același corp modelat pe toată durata problemei (de exemplu, în Secțiunea~\ref{sec:exemplu}, $i = 1$ este Pământul, iar $i = 2$ este Luna). Corpul $i$ are masa $m_i$ și poziția $\vr_i(t)$, măsurată într-un sistem de referință inerțial.
   \item Singura interacțiune este atracția gravitațională newtoniană dintre fiecare pereche de corpuri. Sistemul este izolat: nu există forțe externe.
   \item Corpurile nu se ciocnesc: $\vr_i(t) \neq \vr_j(t)$ pentru orice $i \neq j$.
 \end{enumerate}
 
-\section{Problema celor $N$ corpuri}\label{sec:N}
+\section{Problema celor $n$ corpuri}\label{sec:N}
 
 \subsection*{Ecuațiile de mișcare}
-Forța exercitată de corpul $j$ asupra corpului $i$ este
+Forța exercitată de corpul $j$ asupra corpului $i$, cu $i, j \in \{1, \dots, n\}$ și $j \neq i$, este
 \begin{equation}
   \vec F_{j\to i} = G\,\frac{m_i m_j}{|\vr_j - \vr_i|^{3}}\,(\vr_j - \vr_i), \label{eq:forta}
 \end{equation}
-unde $G$ este constanta atracției universale. Modulul ei este $G m_i m_j / |\vr_j - \vr_i|^2$, iar direcția este de la $i$ spre $j$ (atracție).
+unde $G$ este constanta atracției universale. Modulul ei este $G m_i m_j / |\vr_j - \vr_i|^2$, direcția este cea a dreptei care unește cele două corpuri, iar sensul este de la $i$ spre $j$ (atracție).
 
-Aplicând legea a II-a fiecărui corp și împărțind la $m_i$ obținem, pentru $i = 1,\dots,N$:
+Aplicând principiul al II-lea al mecanicii fiecărui corp și împărțind la $m_i$ obținem, pentru fiecare $i \in \{1, \dots, n\}$:
 \begin{equation}
-  \boxed{\;\odd{\vr_i} = \sum_{j\neq i} G\,m_j\,\frac{\vr_j - \vr_i}{|\vr_j - \vr_i|^{3}}\;} \label{eq:N}
+  \boxed{\;\odd{\vr_i} = \sum_{\substack{j=1\\ j\neq i}}^{n} G\,m_j\,\frac{\vr_j - \vr_i}{|\vr_j - \vr_i|^{3}}\;} \label{eq:N}
 \end{equation}
 Accelerația corpului $i$ nu depinde de propria lui masă, ci doar de masele și pozițiile celorlalte corpuri.
 
 Acceptăm următorul fapt: dacă știm pozițiile și vitezele tuturor corpurilor la momentul inițial, mișcarea lor ulterioară este complet determinată de \eqref{eq:N}. Pe el se bazează simularea pas cu pas.
 
-\subsection*{Legătura cu acceleratorul: de ce $N(N-1)$ termeni}
-Pentru $N \ge 3$, ecuațiile \eqref{eq:N} nu au în general o soluție în formă închisă, deci se rezolvă numeric: la fiecare pas de timp se calculează accelerațiile tuturor corpurilor.
+\subsection*{Legătura cu acceleratorul: de ce $n(n-1)$ termeni}
+Pentru orice număr natural $n \ge 3$, ecuațiile \eqref{eq:N} nu au în general o soluție în formă închisă, deci se rezolvă numeric: la fiecare pas de timp se calculează accelerațiile tuturor corpurilor.
 
-Accelerația corpului $i$ este o sumă cu câte un termen pentru fiecare \emph{alt} corp $j$, deci are $N - 1$ termeni. Corpurile sunt $N$, deci în total sunt
+Accelerația corpului $i$ este o sumă cu câte un termen pentru fiecare \emph{alt} corp $j$, deci are $n - 1$ termeni. Corpurile sunt $n$, deci în total sunt
 \[
-  N \cdot (N-1) \text{ termeni de forma } \quad G\,m_j\,\frac{\vr_j - \vr_i}{|\vr_j - \vr_i|^{3}}
+  n \cdot (n-1) \text{ termeni de forma } \quad G\,m_j\,\frac{\vr_j - \vr_i}{|\vr_j - \vr_i|^{3}}
 \]
-la fiecare pas de timp. De exemplu, pentru $N = 3$:
+la fiecare pas de timp. De exemplu, pentru $n = 3$:
 \begin{align*}
   \odd{\vr_1} &= \underbrace{G m_2 \tfrac{\vr_2 - \vr_1}{|\vr_2 - \vr_1|^3}}_{\text{de la 2}} + \underbrace{G m_3 \tfrac{\vr_3 - \vr_1}{|\vr_3 - \vr_1|^3}}_{\text{de la 3}},\\
   \odd{\vr_2} &= \underbrace{G m_1 \tfrac{\vr_1 - \vr_2}{|\vr_1 - \vr_2|^3}}_{\text{de la 1}} + \underbrace{G m_3 \tfrac{\vr_3 - \vr_2}{|\vr_3 - \vr_2|^3}}_{\text{de la 3}},\\
   \odd{\vr_3} &= \underbrace{G m_1 \tfrac{\vr_1 - \vr_3}{|\vr_1 - \vr_3|^3}}_{\text{de la 1}} + \underbrace{G m_2 \tfrac{\vr_2 - \vr_3}{|\vr_2 - \vr_3|^3}}_{\text{de la 2}},
 \end{align*}
-adică $3 \cdot 2 = 6$ termeni (Figura~\ref{fig:termeni}). Pentru $N = 1\,000$ sunt deja $999\,000$ de termeni la fiecare pas: numărul crește aproximativ ca $N^2$.
+adică $3 \cdot 2 = 6$ termeni (Figura~\ref{fig:termeni}). Pentru $n = 1\,000$ sunt deja $999\,000$ de termeni la fiecare pas. În general,
+\[
+  n(n-1) = \Theta(n^2),
+\]
+adică, pentru $n \ge 2$, numărul de termeni este cuprins între $\tfrac{1}{2}n^2$ și $n^2$: costul unui pas de timp crește pătratic cu numărul de corpuri.
 
 \begin{figure}[H]
 \centering
@@ -105,7 +105,7 @@ adică $3 \cdot 2 = 6$ termeni (Figura~\ref{fig:termeni}). Pentru $N = 1\,000$ s
   \coordinate (C) at (1.9,3.0);
   \draw[ghid] (A) -- (B) -- (C) -- cycle;
   % cate doua sageti la fiecare corp, spre celelalte doua
-  \foreach \X/\Y/\lab in {A/B/{de la 2}, A/C/{de la 3}, B/A/{de la 1}, B/C/{de la 3}, C/A/{de la 1}, C/B/{de la 2}}{
+  \foreach \X/\Y in {A/B, A/C, B/A, B/C, C/A, C/B}{
     \draw[vec, forta] (\X) -- ($(\X)!1.15cm!(\Y)$);
   }
   \node[corpA, minimum size=5mm] at (A) {};
@@ -115,13 +115,13 @@ adică $3 \cdot 2 = 6$ termeni (Figura~\ref{fig:termeni}). Pentru $N = 1\,000$ s
   \node[below right=1mm] at (B) {$2$};
   \node[above=2.5mm] at (C) {$3$};
 \end{tikzpicture}
-\caption{Pentru $N = 3$, fiecare corp este tras de celelalte două. Fiecare săgeată este un termen din \eqref{eq:N}: $3$ corpuri $\times$ $2$ termeni $= 6 = N(N-1)$.}
+\caption{Pentru $n = 3$, fiecare corp este atras de celelalte două. Fiecare săgeată este un termen din \eqref{eq:N}: $3$ corpuri $\times$ $2$ termeni $= 6 = n(n-1)$.}
 \label{fig:termeni}
 \end{figure}
 
 \textbf{Calculul unui astfel de termen pentru o pereche de corpuri este exact operația pe care o implementează Serenity în hardware.} Pipeline-ul primește pozițiile a două corpuri și produce un termen la fiecare ciclu de ceas.
 
-\section{Cazul $N = 2$}\label{sec:N2}
+\section{Cazul $n = 2$}\label{sec:N2}
 Lucrăm în planul $xOy$. Alegem toate pozițiile și vitezele inițiale în acest plan. Forțele acționează pe dreapta care unește corpurile, deci sunt și ele în plan, iar corpurile nu au de ce să iasă din el. Toți vectorii au deci două componente, $x$ și $y$.
 
 Notăm vectorul relativ și distanța dintre corpuri:
@@ -130,7 +130,7 @@ Notăm vectorul relativ și distanța dintre corpuri:
 \]
 Ecuațiile \eqref{eq:N} devin:
 \begin{align}
-  \odd{\vr_1} &= +\,G\,m_2\,\frac{\vr}{r^{3}}, \label{eq:c1}\\
+  \odd{\vr_1} &= G\,m_2\,\frac{\vr}{r^{3}}, \label{eq:c1}\\
   \odd{\vr_2} &= -\,G\,m_1\,\frac{\vr}{r^{3}}. \label{eq:c2}
 \end{align}
 
@@ -152,11 +152,11 @@ Ecuațiile \eqref{eq:N} devin:
   \draw[vec, forta] ($(B)+(-0.17,-0.21)$) -- ($($(B)!1.0cm!(A)$)+(-0.17,-0.21)$) node[below left=-1pt] {$\vec F_{1\to 2}$};
   \draw[vec, forta] ($($(A)!0.45cm!(B)$)+(-0.17,-0.21)$) -- ($($(A)!1.45cm!(B)$)+(-0.17,-0.21)$) node[below left=-1pt] {$\vec F_{2\to 1}$};
 \end{tikzpicture}
-\caption{Două corpuri în planul $xOy$. Vectorul relativ $\vr$ pleacă din corpul 1 spre corpul 2. Forțele sunt egale în modul, opuse și pe dreapta care unește corpurile; în desen sunt deplasate puțin lateral, ca să nu se suprapună cu $\vr$.}
+\caption{Două corpuri în planul $xOy$, într-un sistem de referință inerțial cu originea $O$. Vectorul relativ $\vr$ pleacă din corpul 1 spre corpul 2. Forțele sunt egale în modul, de semne contrare ($\vec F_{1\to 2} = -\vec F_{2\to 1}$, conform principiului al III-lea) și pe aceeași direcție, cea a dreptei care unește corpurile. În desen sunt deplasate puțin lateral, ca să nu se suprapună cu $\vr$.}
 \label{fig:inertial}
 \end{figure}
 
-\section{Două consecințe pentru $N = 2$}\label{sec:consecinte}
+\section{Două consecințe pentru $n = 2$}\label{sec:consecinte}
 
 \subsection*{Mișcarea relativă}
 Scăzând \eqref{eq:c1} din \eqref{eq:c2}:
@@ -165,7 +165,11 @@ Scăzând \eqref{eq:c1} din \eqref{eq:c2}:
 \end{equation}
 
 \subsection*{Centrul de masă}
-Fie $M := m_1 + m_2$ și $\vR := (m_1\vr_1 + m_2\vr_2)/M$. Înmulțind \eqref{eq:c1} cu $m_1$, \eqref{eq:c2} cu $m_2$ și adunând, membrii drepți se anulează:
+Notăm cu $M$ masa totală a sistemului și cu $\vR$ vectorul de poziție al centrului de masă:
+\[
+  M := m_1 + m_2, \qquad \vR := \frac{m_1\vr_1 + m_2\vr_2}{M}.
+\]
+Înmulțind \eqref{eq:c1} cu $m_1$, \eqref{eq:c2} cu $m_2$ și adunând, membrii drepți se anulează:
 \[
   \odd{\vR} = \vec 0 .
 \]
@@ -174,23 +178,23 @@ Deci centrul de masă se mișcă rectiliniu uniform. În particular, dacă la î
 \section{De la ecuații la calculul numeric}\label{sec:numeric}
 
 \subsection*{Discretizarea în timp}
-Notăm vitezele $\vv_i := \od{\vr_i}$ și accelerațiile $\va_i$, adică membrul drept din \eqref{eq:N}. Prin definiție, $\od{\vv} = \lim_{\Delta t\to 0} \frac{\vv(t+\Delta t) - \vv(t)}{\Delta t}$. Calculul numeric înlocuiește limita cu un pas finit $\Delta t$ și avansează sistemul pe momentele $t_n = n\,\Delta t$:
+Notăm vitezele $\vv_i := \od{\vr_i}$ și accelerațiile $\va_i$, adică membrul drept din \eqref{eq:N}. Prin definiție, $\od{\vv} = \lim_{\Delta t\to 0} \frac{\vv(t+\Delta t) - \vv(t)}{\Delta t}$. Calculul numeric înlocuiește limita cu un pas finit $\Delta t$ și avansează sistemul pe momentele $t_k = k\,\Delta t$, cu $k \in \mathbb{N}$:
 \begin{equation}
-  \vv_i^{\,n+1} = \vv_i^{\,n} + \va_i^{\,n}\,\Delta t, \qquad
-  \vr_i^{\,n+1} = \vr_i^{\,n} + \vv_i^{\,n}\,\Delta t, \label{eq:euler}
+  \vv_i^{\,k+1} = \vv_i^{\,k} + \va_i^{\,k}\,\Delta t, \qquad
+  \vr_i^{\,k+1} = \vr_i^{\,k} + \vv_i^{\,k}\,\Delta t, \label{eq:euler}
 \end{equation}
-unde indicele superior $n$ înseamnă valoarea la momentul $t_n$. Aceasta este metoda Euler explicită.
+unde indicele superior $k$ înseamnă valoarea la momentul $t_k$. Aceasta este metoda Euler explicită.
 
 \textbf{Aceasta este singura aproximație a calculului.} Eroarea ei scade odată cu $\Delta t$ și tinde la zero când $\Delta t \to 0$. La ea se adaugă erorile de rotunjire ale aritmeticii cu precizie finită (\texttt{double} în software, fixed-point în hardware). Ordinea în care se actualizează vitezele și pozițiile contează mult pe termen lung și este studiată separat.
 
-\subsection*{Un pas de calcul pentru $N = 2$}
-Cu $\vr_i = (x_i, y_i)$ și $\vv_i = (v_{x,i}, v_{y,i})$, un pas constă în:
+\subsection*{Un pas de calcul pentru $n = 2$}
+Cu $\vr_i = (x_i, y_i)$ și $\vv_i = (v_{x,i}, v_{y,i})$, unde $i \in \{1, 2\}$, un pas constă în:
 \begin{enumerate}
   \item diferențele de poziție: $\Delta x = x_2 - x_1$, \; $\Delta y = y_2 - y_1$;
-  \item distanța și factorul comun: $r = \sqrt{\Delta x^2 + \Delta y^2}$, \; $s = 1/r^3$;
+  \item distanța și factorul comun: $r = \sqrt{(\Delta x)^2 + (\Delta y)^2}$, \; $s = 1/r^3$;
   \item accelerațiile, conform \eqref{eq:c1}--\eqref{eq:c2}:
   \[
-    a_{x,1} = +G m_2\,s\,\Delta x,\quad a_{y,1} = +G m_2\,s\,\Delta y,\qquad
+    a_{x,1} = G m_2\,s\,\Delta x,\quad a_{y,1} = G m_2\,s\,\Delta y,\qquad
     a_{x,2} = -G m_1\,s\,\Delta x,\quad a_{y,2} = -G m_1\,s\,\Delta y;
   \]
   \item actualizarea vitezelor și a pozițiilor, conform \eqref{eq:euler}, pentru ambele corpuri.
@@ -198,7 +202,7 @@ Cu $\vr_i = (x_i, y_i)$ și $\vv_i = (v_{x,i}, v_{y,i})$, un pas constă în:
 Pașii 1--3 sunt calculul pentru o pereche: aceasta este partea pe care o preia acceleratorul. Pasul 4 rămâne în software.
 
 \section{Exemplu: sistemul Pământ--Lună}\label{sec:exemplu}
-Corpul 1 este Pământul, corpul 2 este Luna.
+Corpul $i = 1$ este Pământul, corpul $i = 2$ este Luna.
 
 \subsection*{Constante}
 Valorile sunt luate din surse publice (de exemplu, fișele NASA pentru Pământ și Lună):
@@ -212,7 +216,7 @@ Mărime & Simbol & Valoare \\
 Constanta atracției universale & $G$ & $6{,}674\times10^{-11}$\,m$^3$\,kg$^{-1}$\,s$^{-2}$ \\
 Masa Pământului & $m_1$ & $5{,}972\times10^{24}$\,kg \\
 Masa Lunii & $m_2$ & $7{,}342\times10^{22}$\,kg \\
-Distanța medie Pământ--Lună & $d$ & $3{,}844\times10^{8}$\,m \\
+Distanța medie Pământ--Lună & $D$ & $3{,}844\times10^{8}$\,m \\
 \bottomrule
 \end{tabular}
 \caption{Constantele folosite în simulare.}
@@ -227,32 +231,32 @@ Distanța medie Pământ--Lună & $d$ & $3{,}844\times10^{8}$\,m \\
 \end{enumerate}
 
 \subsection*{Condițiile inițiale}
-Alegerile de mai jos sunt cele mai simple care duc la o orbită ușor de verificat:
+Notăm cu indicele $0$ valorile de la momentul inițial $t = 0$: $x_{0i}$ și $y_{0i}$ sunt coordonatele inițiale ale corpului $i$, iar $v_{0i}$ este viteza lui inițială. Alegerile de mai jos sunt cele mai simple care duc la o orbită ușor de verificat:
 \begin{itemize}
   \item \textbf{Centrul de masă în origine și în repaus.} Așa rămâne în origine toată simularea (Secțiunea~\ref{sec:consecinte}), iar sistemul nu „pleacă” de pe grafic.
-  \item \textbf{Ambele corpuri pe axa $x$, de o parte și de alta a originii, la distanța $d$ unul de altul.} Ca centrul de masă să fie în origine ($m_1 x_1 + m_2 x_2 = 0$), corpul mai greu stă mai aproape de ea:
+  \item \textbf{Ambele corpuri pe axa $x$, de o parte și de alta a originii, la distanța $D$ unul de altul}, deci $y_{01} = y_{02} = 0$. Ca centrul de masă să fie în origine ($m_1 x_{01} + m_2 x_{02} = 0$), corpul mai greu stă mai aproape de ea:
   \[
-    x_1 = -\frac{m_2}{M}\,d, \qquad x_2 = +\frac{m_1}{M}\,d .
+    x_{01} = -\frac{m_2}{M}\,D, \qquad x_{02} = \frac{m_1}{M}\,D .
   \]
-  \item \textbf{Vitezele pe axa $y$, de sensuri opuse.} Vrem ca fiecare corp să se rotească pe un cerc în jurul originii. Pe un cerc, viteza e mereu perpendiculară pe rază; raza de start e pe axa $x$, deci viteza e pe axa $y$. Luna pornește în sus, Pământul în jos, ca să se rotească în același sens în jurul originii. Mărimea vitezelor o calculăm mai jos.
+  \item \textbf{Vitezele pe axa $y$, de sensuri opuse.} Vrem ca fiecare corp să se rotească pe un cerc în jurul originii. Pe un cerc, viteza e mereu perpendiculară pe rază; raza de start e pe axa $x$, deci viteza inițială are doar componentă pe axa $y$, iar $v_{0i}$ notează această componentă. Luna pornește în sensul pozitiv al axei $y$, Pământul în sensul negativ, ca să se rotească în același sens în jurul originii. Mărimea vitezelor o calculăm mai jos.
 \end{itemize}
 
 \subsection*{Cât de mari trebuie să fie vitezele}
-Răspunsul vine din comparația dintre ce \emph{cere} un cerc și ce \emph{primește} corpul de la gravitație. Facem calculul pentru Lună, apoi pentru Pământ.
+Răspunsul vine din compararea condițiilor impuse de mișcarea circulară cu cele impuse de interacțiunea gravitațională. Facem calculul pentru Lună, apoi pentru Pământ.
 
-\paragraph{Ce cere un cerc.} Un corp care merge cu viteza $v$ pe un cerc de rază $R$ își schimbă continuu direcția vitezei. Asta înseamnă că are o accelerație, îndreptată mereu spre centrul cercului, de mărime
+\paragraph{Condițiile impuse de mișcarea circulară.} Un corp care se mișcă cu viteza de modul constant $v$ pe un cerc de rază $r$ (în acest paragraf, $r$ notează raza cercului, nu distanța dintre corpuri) își schimbă continuu direcția vitezei. Asta înseamnă că are o accelerație cu direcția razei și sensul mereu spre centrul cercului, de modul
 \[
-  a_{\text{cerc}} = \frac{v^2}{R}.
+  a_{\text{cerc}} = \frac{v^2}{r}.
 \]
-Este un fapt de cinematică (accelerația centripetă) și nu spune nimic despre cauză: fără o astfel de accelerație, corpul ar merge în linie dreaptă.
+Este un fapt de cinematică (accelerația centripetă) și nu spune nimic despre cauză: fără o astfel de accelerație, corpul s-ar mișca rectiliniu.
 
-\paragraph{Ce primește Luna.} Singura accelerație a Lunii este cea gravitațională, produsă de Pământ. Din \eqref{eq:c2}, mărimea ei este
+\paragraph{Condițiile impuse de interacțiunea gravitațională.} Singura accelerație a Lunii este cea gravitațională, produsă de Pământ. Din \eqref{eq:c2}, modulul ei este
 \[
-  a_{\text{grav}} = \frac{G m_1}{d^2},
+  a_{\text{grav}} = \frac{G m_1}{D^2},
 \]
-iar direcția este spre Pământ. Pământul se află pe aceeași dreaptă cu Luna și cu originea, de cealaltă parte a originii, deci accelerația gravitațională arată \emph{și} spre centrul cercului Lunii. Direcția e cea corectă, mai trebuie potrivită doar mărimea.
+direcția este cea a dreptei Pământ--Lună, iar sensul este spre Pământ. Pământul se află pe aceeași dreaptă cu Luna și cu originea, de cealaltă parte a originii, deci accelerația gravitațională are sensul \emph{și} spre centrul cercului Lunii. Direcția și sensul sunt cele corecte, mai trebuie potrivit doar modulul.
 
-\paragraph{Atenție la cele două distanțe.} Raza cercului pe care se rotește Luna este distanța până la \emph{centrul de masă}, $x_2$. Gravitația depinde însă de distanța până la \emph{Pământ}, $d$ (Figura~\ref{fig:cerc}). Cele două diferă, pentru că centrul de masă nu e în centrul Pământului.
+\paragraph{Atenție la cele două distanțe.} Raza cercului pe care se rotește Luna este distanța până la \emph{centrul de masă}, $x_{02}$. Gravitația depinde însă de distanța până la \emph{Pământ}, $D$ (Figura~\ref{fig:cerc}). Cele două diferă, pentru că centrul de masă nu e în centrul Pământului.
 
 \begin{figure}[H]
 \centering
@@ -269,49 +273,48 @@ iar direcția este spre Pământ. Pământul se află pe aceeași dreaptă cu Lu
   \node[above left=3.5mm, font=\small] at (P) {Pământ};
   \node[right=2mm, font=\small] at (L) {Luna};
   % viteza Lunii
-  \draw[vec, viteza, line width=1.2pt] (L) -- ++(0,1.4) node[right] {$v_2$};
+  \draw[vec, viteza, line width=1.2pt] (L) -- ++(0,1.4) node[right] {$v_{02}$};
   % acceleratia gravitationala, spre Pamant (si spre centrul cercului)
-  \draw[vec, forta, line width=1.2pt] ($(L)+(-0.25,0)$) -- ++(-1.3,0) node[above=1pt, font=\small] {$a_{\text{grav}} = \frac{G m_1}{d^2}$};
+  \draw[vec, forta, line width=1.2pt] ($(L)+(-0.25,0)$) -- ++(-1.3,0) node[above=1pt, font=\small] {$a_{\text{grav}} = \frac{G m_1}{D^2}$};
   % cote
   \draw[gray!50] (O) -- (0,-1.15); \draw[gray!50] (L) -- (3,-1.85); \draw[gray!50] (P) -- (-1,-1.85);
-  \draw[{Stealth[length=2mm]}-{Stealth[length=2mm]}] (0,-1.0) -- (3,-1.0) node[midway, below] {$x_2$};
-  \draw[{Stealth[length=2mm]}-{Stealth[length=2mm]}] (-1,-1.7) -- (3,-1.7) node[pos=0.3, below] {$d$};
+  \draw[{Stealth[length=2mm]}-{Stealth[length=2mm]}] (0,-1.0) -- (3,-1.0) node[midway, below] {$x_{02}$};
+  \draw[{Stealth[length=2mm]}-{Stealth[length=2mm]}] (-1,-1.7) -- (3,-1.7) node[pos=0.3, below] {$D$};
 \end{tikzpicture}
-\caption{Luna se rotește pe un cerc de rază $x_2$ în jurul centrului de masă, dar e atrasă de Pământ, aflat la distanța $d$. Accelerația gravitațională arată spre Pământ, deci și spre centrul cercului. Raportul maselor e exagerat în desen.}
+\caption{Luna se rotește pe un cerc de rază $x_{02}$ în jurul centrului de masă, dar e atrasă de Pământ, aflat la distanța $D$. Accelerația gravitațională are sensul spre Pământ, deci și spre centrul cercului. Raportul maselor e exagerat în desen.}
 \label{fig:cerc}
 \end{figure}
 
-\paragraph{Condiția.} Luna rămâne pe cerc exact atunci când accelerația pe care o primește este egală cu cea pe care o cere cercul:
+\paragraph{Condiția.} Luna rămâne pe cercul de rază $x_{02}$ exact atunci când accelerația impusă de interacțiunea gravitațională este egală cu cea impusă de mișcarea circulară:
 \[
-  \frac{v_2^2}{x_2} = \frac{G m_1}{d^2}.
+  \frac{v_{02}^2}{x_{02}} = \frac{G m_1}{D^2}.
 \]
-Dacă $v_2$ ar fi mai mică, gravitația ar fi mai mare decât e nevoie pentru cerc și ar trage Luna spre interior: orbita ar deveni o elipsă. Dacă $v_2$ ar fi mai mare, Luna s-ar depărta: tot o elipsă, iar la viteze mult mai mari Luna ar scăpa de tot. Deci rotația există pentru o gamă largă de viteze. Valoarea exactă de mai jos o alegem doar ca orbita să fie un cerc, cel mai ușor de verificat.
 
-\paragraph{Calculul.} Înlocuim $x_2 = \frac{m_1}{M}\,d$:
+\paragraph{Calculul.} Înlocuim $x_{02} = \frac{m_1}{M}\,D$:
 \[
-  v_2^2 = \frac{G m_1}{d^2}\cdot\frac{m_1}{M}\,d = \left(\frac{m_1}{M}\right)^{2}\frac{GM}{d}
+  v_{02}^2 = \frac{G m_1}{D^2}\cdot\frac{m_1}{M}\,D = \left(\frac{m_1}{M}\right)^{2}\frac{GM}{D}
   \quad\Longrightarrow\quad
-  v_2 = \frac{m_1}{M}\sqrt{\frac{GM}{d}} .
+  v_{02} = \frac{m_1}{M}\sqrt{\frac{GM}{D}} .
 \]
-Pentru Pământ, raționamentul e identic: cercul lui are raza $|x_1| = \frac{m_2}{M}\,d$, iar accelerația primită de la Lună este $\frac{G m_2}{d^2}$. Rezultă aceeași formulă, cu $m_2$ în loc de $m_1$ și cu semn minus, pentru că Pământul pornește în jos:
+Pentru Pământ, raționamentul e identic: cercul lui are raza $|x_{01}| = \frac{m_2}{M}\,D$, iar accelerația produsă de Lună are modulul $\frac{G m_2}{D^2}$. Rezultă aceeași formulă, cu $m_2$ în loc de $m_1$ și cu semn minus, pentru că Pământul pornește în sensul negativ al axei $y$:
 \[
-  v_1 = -\frac{m_2}{M}\sqrt{\frac{GM}{d}} .
+  v_{01} = -\frac{m_2}{M}\sqrt{\frac{GM}{D}} .
 \]
-Se verifică imediat că $m_1 v_1 + m_2 v_2 = 0$, deci centrul de masă stă într-adevăr pe loc.
+Se verifică imediat că $m_1 v_{01} + m_2 v_{02} = 0$, deci centrul de masă stă într-adevăr pe loc.
 
 Cu valorile din Tabelul~\ref{tab:const} obținem valorile de mai jos, date cu suficiente cifre ca să poată fi copiate direct în cod:
 
 \begin{table}[H]
 \centering
-\begin{tabular}{@{}lrrrr@{}}
+\begin{tabular}{@{}lrrr@{}}
 \toprule
-Corp & $x$ (m) & $y$ (m) & $v_x$ (m/s) & $v_y$ (m/s) \\
+Corp $i$ & $x_{0i}$ (m) & $y_{0i}$ (m) & $v_{0i}$ (m/s) \\
 \midrule
-1 (Pământ) & $-4\,668\,434{,}6$ & $0$ & $0$ & $-12{,}442\,354$ \\
-2 (Luna)   & $379\,731\,565{,}4$ & $0$ & $0$ & $1\,012{,}063\,987$ \\
+1 (Pământ) & $-4\,668\,434{,}6$ & $0$ & $-12{,}442\,354$ \\
+2 (Luna)   & $379\,731\,565{,}4$ & $0$ & $1\,012{,}063\,987$ \\
 \bottomrule
 \end{tabular}
-\caption{Condițiile inițiale ale simulării Pământ--Lună.}
+\caption{Condițiile inițiale ale simulării Pământ--Lună. Vitezele inițiale sunt orientate de-a lungul axei $y$: $v_{0i}$ este componenta lor pe această axă, iar componenta pe axa $x$ este $0$.}
 \label{tab:ci}
 \end{table}
 
@@ -325,9 +328,9 @@ Corp & $x$ (m) & $y$ (m) & $v_x$ (m/s) & $v_y$ (m/s) \\
   \draw[axa] (0,-3.5) -- (0,3.7) node[left] {$y$};
   \coordinate (P) at (-1,0);
   \coordinate (L) at (3,0);
-  \draw[vec, vecr, line width=1.1pt] (P) -- (L) node[pos=0.72, above] {$d$};
-  \draw[vec, viteza, line width=1.2pt] (L) -- ++(0,1.5) node[right] {$v_2$};
-  \draw[vec, viteza, line width=1.2pt] ($(P)+(0,-0.36)$) -- ++(0,-0.5) node[left] {$v_1$};
+  \draw[vec, vecr, line width=1.1pt] (P) -- (L) node[pos=0.72, above] {$D$};
+  \draw[vec, viteza, line width=1.2pt] (L) -- ++(0,1.5) node[right] {$v_{02}$};
+  \draw[vec, viteza, line width=1.2pt] ($(P)+(0,-0.36)$) -- ++(0,-0.5) node[left] {$v_{01}$};
   \node[corpA] at (P) {};
   \node[corpB] at (L) {};
   \node[above left=3.5mm, font=\small] at (P) {Pământ};
@@ -342,11 +345,21 @@ Corp & $x$ (m) & $y$ (m) & $v_x$ (m/s) & $v_y$ (m/s) \\
 \subsection*{Ce trebuie să obținem}
 Pentru aceste condiții inițiale cunoaștem mișcarea exactă a modelului. Orice abatere a simulării de la ea vine din pasul de timp și din rotunjiri:
 \begin{itemize}
-  \item distanța dintre corpuri rămâne $d = 384\,400$\,km;
+  \item distanța dintre corpuri rămâne $D = 384\,400$\,km;
   \item centrul de masă rămâne în origine;
   \item Pământul descrie un cerc de rază $\approx 4\,668$\,km în jurul originii (mai mică decât raza Pământului, deci centrul de masă e în interiorul lui), iar Luna un cerc de rază $\approx 379\,732$\,km;
-  \item perioada este $T = 2\pi x_2 / v_2 = 2\pi\sqrt{d^3/(GM)} \approx 2{,}3575\times10^{6}$\,s $\approx 27{,}29$ zile. Luna reală are perioada siderală de $27{,}32$ zile; diferența vine din aproximațiile (A1) și (A2).
+  \item perioada mișcării, adică timpul unei rotații complete, este
+  \[
+    T = \frac{2\pi x_{02}}{v_{02}} = 2\pi\sqrt{\frac{D^3}{GM}} \approx 2{,}3575\times10^{6}\ \text{s} \approx 27{,}29 \text{ zile}.
+  \]
 \end{itemize}
-Cu un pas $\Delta t = 60$\,s, o rotație completă înseamnă aproximativ $39\,300$ de pași.
+Pentru comparație, Luna reală face o rotație completă în jurul Pământului în $27{,}32$ zile. Aceasta se numește \emph{perioada siderală}: timpul după care Luna revine în aceeași poziție față de stelele îndepărtate, considerate fixe. (Ea diferă de intervalul de $29{,}53$ zile dintre două faze identice ale Lunii, de exemplu de la o Lună plină la următoarea, care se măsoară față de Soare.) Diferența dintre $27{,}29$ și $27{,}32$ zile vine din aproximațiile (A1) și (A2).
+
+\subsection*{Câți pași are o rotație}
+Simularea avansează în pași de durată $\Delta t$, deci numărul de pași dintr-o rotație completă este
+\[
+  \frac{T}{\Delta t} = \frac{2{,}3575\times10^{6}\ \text{s}}{60\ \text{s}} \approx 39\,291{,}4
+\]
+pentru $\Delta t = 60$\,s. Cum numărul de pași trebuie să fie natural, după $39\,291$ de pași Lunii îi mai lipsesc aproximativ $0{,}4$ pași până la punctul de start, adică la aproximativ $0{,}4 \cdot 60\ \text{s} \cdot 1\,012\ \text{m/s} \approx 24$\,km de el. Această diferență nu este o eroare a calculului, ci o consecință a faptului că perioada nu este un multiplu întreg al pasului de timp.
 
 \end{document}
