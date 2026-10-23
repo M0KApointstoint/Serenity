@@ -16,13 +16,21 @@
 #define V_X_MOON_INITIAL (0.0)
 #define V_Y_MOON_INITIAL (1012.06)
 
-#define TIME_CHANGE (60.0)
-#define NR_STEPS (39300)
+#define ONE_MINUTE (60.0)
+
+// Use these for numeric analysis.
+#define ONE_HOUR (ONE_MINUTE * 60.0)
+#define ONE_DAY (ONE_HOUR * 24.0)
+#define ONE_WEEK (ONE_DAY * 7.0)
+
+#define TIME_CHANGE ONE_HOUR
+
+#define MOON_PERIOD (2357500)
+
+#define NR_STEPS ((size_t)(MOON_PERIOD / TIME_CHANGE))
 
 int main(void)
 {
-	printf("Serenity in C!\n");
-
 	double x_earth = X_EARTH_INITIAL;
 	double y_earth = Y_EARTH_INITIAL;
 	double x_moon = X_MOON_INITIAL;
@@ -32,6 +40,11 @@ int main(void)
 	double v_y_earth = V_Y_EARTH_INITIAL;
 	double v_x_moon = V_X_MOON_INITIAL;
 	double v_y_moon = V_Y_MOON_INITIAL;
+
+	printf("Earth data:\n");
+	printf("Position: (x, y) = (%e, %e)\n", x_earth, y_earth);
+	printf("Moon data:\n");
+	printf("Position: (x, y) = (%e, %e)\n", x_moon, y_moon);
 
 	for (size_t i = 0; i < NR_STEPS; ++i) {
 		double x_change = x_moon - x_earth; // delta x.
@@ -60,7 +73,6 @@ int main(void)
 		x_moon += v_x_moon * TIME_CHANGE;
 		y_moon += v_y_moon * TIME_CHANGE;
 
-		printf("--------------------\n");
 		printf("Earth data:\n");
 		printf("Position: (x, y) = (%e, %e)\n", x_earth, y_earth);
 		printf("Moon data:\n");
