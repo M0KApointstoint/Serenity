@@ -146,4 +146,70 @@ smaller constant seems appropiate.
 **The second week was full of progress!**
 
 ### Week 03: TODO -> 26.10.2026 - 02.11.2026 (European dates)
-*Aici e buba: TODO*
+
+*Off to an earlier start on Sunday before the week begins because the semester
+starts to become hardcore.*
+
+- Finally, we are ready to generalize the problem.
+
+- The current work flow does not cut it. When more bodies will come into play,
+the `CSV` file becomes too big because of computationally unnecessary text.
+
+- Everything will now be handled from the `C` code directly, therefore that
+little `Bash` script that I wrote becomes obsolete `:(`. Need to change the
+`Makefile` as well now. After that, the `Python` code needs to be updated too.
+
+- Next, the addition of body structures is done, in the `C` code.
+
+*Here is a cool thing I somehow never really thought of but it makes much
+sense:*
+
+```c
+#include <stdio.h>
+
+struct my_struct {
+    int x;
+    int y;
+};
+
+int main(void)
+{
+    struct my_struct a = {
+        .x = 0,
+        .y = 0
+    };
+    struct my_struct b = {
+        .x = 1,
+        .y = 1
+    };
+
+    struct my_struct arr[2] = {a, b};
+    arr[0].x = 123;
+    arr[1].x = 123;
+    a.y = 123;
+    b.y = 123;
+    
+    printf("%d %d\n", a.x, a.y);
+    return 0;
+}
+
+```
+
+*Compile and run! Assembly knowledge does not dissapoint!*
+
+- After this comes an important design decision:
+
+**Should the `acceleration` be part of the `body` structure or a separate
+entity?.**
+
+- `Claude` recommended that we should have different structures for this,
+however at the beginning it did not seem natural for me.
+ 
+- After much thinking it has become clear why we **should** have different
+objects:
+
+**The hardware computes accelerations and accelerations only!**
+
+Therefore we stick to different structures.
+
+*Generalizing the code took some time...*
