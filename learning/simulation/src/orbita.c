@@ -40,6 +40,44 @@ struct body {
 	double mass;
 };
 
+void compute_accelerations(const struct body *bodies_arr, size_t nr_bodies,
+						   double *accelerations_x_arr, double *accelerations_y_arr)
+{
+	for (size_t i = 0; i < nr_bodies; ++i) {
+		accelerations_x_arr[i] = 0;
+		accelerations_y_arr[i] = 0;
+		for (size_t j = 0; j < nr_bodies; ++j) {
+			if (j == i) {
+				continue;
+			}
+			// delta x.
+			double x_change_j_i = bodies_arr[j].position_x - bodies_arr[i].position_x;
+			// delta y.
+			double y_change_j_i = bodies_arr[j].position_y - bodies_arr[i].position_y;
+
+			double r = x_change_j_i * x_change_j_i;
+			r += y_change_j_i * y_change_j_i;
+			r = sqrt(r); // r = sqrt((x ^ 2) + (y ^ 2)).
+		
+			double s = 1.0 / r;
+			s /= r;
+			s /= r; // s = 1 / (r ^ 3).
+
+			accelerations_x_arr[i] += GRAVITATIONAL_CT * bodies_arr[j].mass * s * x_change_j_i;
+			accelerations_y_arr[i] += GRAVITATIONAL_CT * bodies_arr[j].mass * s * y_change_j_i;
+		}
+	}
+}
+
+void write_to_csv(FILE *f, struct body *bodies_arr, size_t nr_bodies)
+{
+	fprintf(f, "%e,%e", bodies_arr[0].position_x, bodies_arr[0].position_y);
+	for (size_t i = 1; i < nr_bodies; ++i) {
+		fprintf(f, ",%e,%e", bodies_arr[i].position_x, bodies_arr[i].position_y);
+	}
+	fprintf(f, "\n");
+}
+
 int main(void)
 {
 	struct body earth = {
@@ -57,38 +95,28 @@ int main(void)
 		.velocity_y = V_Y_MOON_INITIAL,
 		.mass = MOON_MASS
 	};
-	
-	FILE *f = fopen("./points.csv", "w"); // No return value check :))
-	fprintf(f, "%e,%e,%e,%e\n", earth.position_x, earth.position_y, moon.position_x, moon.position_y);
 
-	for (size_t i = 0; i < NR_STEPS; ++i) {
-		double x_change = moon.position_x - earth.position_x; // delta x.
-		double y_change = moon.position_y - earth.position_y; // delta y.
+	struct body bodies_arr[] = {earth, moon};
+	size_t nr_bodies = sizeof(bodies_arr) / sizeof(*bodies_arr);
+	// a[i] is acceleration of body i.
+	double accelerations_x_arr[nr_bodies];
+	double accelerations_y_arr[nr_bodies];
 
-		double r = x_change * x_change;
-		r += y_change * y_change;
-		r = sqrt(r); // r = sqrt((x ^ 2) + (y ^ 2)).
-		
-		double s = 1.0 / r;
-		s /= r;
-		s /= r; // s = 1 / (r ^ 3).
+	FILE *f = fopen("./points.csv", "w"); // No return value check :)
 
-		double a_x_earth = GRAVITATIONAL_CT * MOON_MASS * s * x_change;
-		double a_y_earth = GRAVITATIONAL_CT * MOON_MASS * s * y_change;
-		double a_x_moon = - GRAVITATIONAL_CT * EARTH_MASS * s * x_change;
-		double a_y_moon = - GRAVITATIONAL_CT * EARTH_MASS * s * y_change;
+	write_to_csv(f, bodies_arr, nr_bodies);
 
-		earth.position_x += earth.velocity_x * TIME_CHANGE;
-		earth.position_y += earth.velocity_y * TIME_CHANGE;
-		moon.position_x += moon.velocity_x * TIME_CHANGE;
-		moon.position_y += moon.velocity_y * TIME_CHANGE;
+	for (size_t n = 0; n < NR_STEPS; ++n) {
+		compute_accelerations(bodies_arr, nr_bodies, accelerations_x_arr, accelerations_y_arr);
 
-		earth.velocity_x += a_x_earth * TIME_CHANGE;
-		earth.velocity_y += a_y_earth * TIME_CHANGE;
-		moon.velocity_x += a_x_moon * TIME_CHANGE;
-		moon.velocity_y += a_y_moon * TIME_CHANGE;
+		for (size_t i = 0; i < nr_bodies; ++i) {
+			bodies_arr[i].position_x += bodies_arr[i].velocity_x * TIME_CHANGE;
+			bodies_arr[i].position_y += bodies_arr[i].velocity_y * TIME_CHANGE;
+			bodies_arr[i].velocity_x += accelerations_x_arr[i] * TIME_CHANGE;
+			bodies_arr[i].velocity_y += accelerations_y_arr[i] * TIME_CHANGE; 
+		}
 
-		fprintf(f, "%e,%e,%e,%e\n", earth.position_x, earth.position_y, moon.position_x, moon.position_y);
+		write_to_csv(f, bodies_arr, nr_bodies);
 	}
 	fclose(f);
 	return 0;
