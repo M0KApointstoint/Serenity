@@ -44,10 +44,8 @@ int main(void)
 	double v_x_moon = V_X_MOON_INITIAL;
 	double v_y_moon = V_Y_MOON_INITIAL;
 
-	printf("Earth data:\n");
-	printf("Position: (x, y) = (%e, %e)\n", x_earth, y_earth);
-	printf("Moon data:\n");
-	printf("Position: (x, y) = (%e, %e)\n", x_moon, y_moon);
+	FILE *f = fopen("./points.csv", "w"); // No return value check :))
+	fprintf(f, "%e,%e,%e,%e\n", x_earth, y_earth, x_moon, y_moon);
 
 	for (size_t i = 0; i < NR_STEPS; ++i) {
 		double x_change = x_moon - x_earth; // delta x.
@@ -76,11 +74,8 @@ int main(void)
 		v_x_moon += a_x_moon * TIME_CHANGE;
 		v_y_moon += a_y_moon * TIME_CHANGE;
 
-		printf("Earth data:\n");
-		printf("Position: (x, y) = (%e, %e)\n", x_earth, y_earth);
-		printf("Moon data:\n");
-		printf("Position: (x, y) = (%e, %e)\n", x_moon, y_moon);
+		fprintf(f, "%e,%e,%e,%e\n", x_earth, y_earth, x_moon, y_moon);
 	}
+	fclose(f);
 	return 0;
 }
-

@@ -1,20 +1,12 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-points_matrix = np.loadtxt("points.csv", delimiter=",")
+points_matrix = np.loadtxt("points.csv", delimiter=",") / 1e3 # Convert to km.
 
-x_earth_list = []
-y_earth_list = []
-x_moon_list = []
-y_moon_list = []
-
-for i in range(len(points_matrix)):
-    if i % 2 == 0:
-        x_earth_list.append(points_matrix[i, 0] / 1e3)
-        y_earth_list.append(points_matrix[i, 1] / 1e3)
-    else:
-        x_moon_list.append(points_matrix[i, 0] / 1e3)
-        y_moon_list.append(points_matrix[i, 1] / 1e3)
+x_earth_list = points_matrix[:, 0]
+y_earth_list = points_matrix[:, 1]
+x_moon_list = points_matrix[:, 2]
+y_moon_list = points_matrix[:, 3]
 
 plt.figure(figsize=(10, 10))
 plt.plot(x_earth_list, y_earth_list, label="Earth")
