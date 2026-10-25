@@ -32,8 +32,7 @@ from the paper.
 - The [`C`](./simulation/src/orbita.c) code follows along the paper nicely,
 it's easy to understand and **implement from scratch**. I wrote the code from
 scratch following along the paper, it comes out nicely. The review was done
-using `AI`, I believe that is necessary in order to get construct *code of
-quality*.
+using `AI`, I believe that is necessary in order to construct *quality code*.
 
 - Here is how you run the code on a typical system that has a `Linux` kernel
 with `GNU` tools:
@@ -56,9 +55,9 @@ $ ./orbita
 
 - I first searched for what `CSV` files are and then what `Matplotlib` is.
 
-- Next, we need to filter the output from the C program to a an actual `CSV`
-file. I could have modified the C code to do that more directly but practicing
-`Bash` together with searching insde [`man pages`] and not using AI directly
+- Next, we need to filter the output from the `C` program to an actual `CSV`
+file. I could have modified the `C` code to do that more directly but practicing
+`Bash` together with searching inside `man pages` and not using `AI` directly
 makes me feel much better. Here is how I generate the `CSV` file:
 
 *Make sure you are in the right directory as in the last session!*
@@ -67,12 +66,12 @@ makes me feel much better. Here is how I generate the `CSV` file:
 $ ./orbita | grep '(x, y)' | cut -d " " -f 5,6 | tr "()" " " | tr -d " " > points.csv # Looks scary, I know :)
 ```
 
-- Next I wrote the Python code that will generate the plot. This was done with
+- Next I wrote the `Python` code that will generate the plot. This was done with
 help from AI but I wrote the code from scratch after understanding what it
 does, it's not hard at all from a high-level perspective.
 
 **It's important to mention that I ordered `Claude` to rewrite the code until
-it was understandable for me, since in many cases it used quircky `Python` things
+it was understandable for me, since in many cases it used quirky `Python` things
 that are annoying to take time for understanding them!**
 
 - Next step is to run the `Python` code that gives an image of the plot, then
@@ -90,8 +89,8 @@ building step of the project. Another benefit of using `make` is that it only
 builds things that were changed, it leaves everything else alone.
 
 - Makefiles are useful in many places so this project is a great opportunity to
-learn more about them in detail with official documentatino, therefore what
-other place to see than
+learn more about them in detail with some documentation, therefore what other
+place to see than
 [`Beginner Makefile Tutorial`](https://www.youtube.com/watch?v=zeEMISsjO38).
 
 - After writing the [`Makefile`](./simulation/src/Makefile) we can now build
@@ -106,20 +105,45 @@ $ make clean # Optional.
 
 **Now it's time for some numeric analysis:**
 
-- First, it's nice to see what happens if we change the `TIME_CHANGE` constant
+- **First**, it's nice to see what happens if we change the `TIME_CHANGE` constant
 at the beginning of the `C` code. It makes sense to get big errors if it's
 too big. I left some possible values to play with by changing the `TIME_CHANGE`
 defintion.
 
-- I first panicked because of a `donut` appearance for the `ONE_DAY` value of
+- I panicked because of a `donut` appearance for the `ONE_DAY` value of
 `TIME_CHANGE`, that happens because the trajectory of each body was overlapping
 with itself so much that a thicker trajectory appeared. In order to fix this
 problem, I changed the `NR_STEPS` constant so that it satisfies the paper
 equation.
 
-- Second, the theoretical paper uses the `Explicit Euler Method`, but the `C`
+- **Second**, the theoretical paper uses the `Explicit Euler Method`, but the `C`
 code that I wrote uses the `Semi-Implicit Euler Method`. This was purely
 unintentional and I figured it out while using AI, therefore this is a good
 time to pause and think about which method fits best for the simulation.
 
-*TODO: Aici e buba.*
+- It all comes down to that `k`-th derivative term. `Claude` has made me a good
+reference table for this method:
+
+| Method | `Velocity`: `a` coming from | `Position`: `v` coming from |
+| --- | --- | --- |
+| Explicit Euler (same as in paper) | `k`-th `x` term: $(x^k)$ | `k`-th `v` term: $(v^k)$ |
+| Semi-Implicit Euler (initial code) | `k`-th `x` term: $(x^k)$ | `k + 1`-th `v` term: $(v^{k + 1})$ |
+| Implicit Euler | `k + 1`-th `x` term: $(x^{k + 1})$ | `k + 1`-th `v` term: $(v^{k + 1})$ |
+
+- I am not gonna get into a deep analysis for each method, I will simply choose
+the explicit Euler method as presented in the paper, it seems more intuitive at
+first.
+
+- After changing the code, it turns out that the simulation looks a little bit
+**worse** than before, this is important to note. I am pretty sure that if I
+take some time to understand *why* this happens, it will make sense. My feeling
+is that the problem is related to the initial coordonates and the fact that we
+want a circular trajectory.
+
+- Since the simulation is not as powerful now, changing `TIME_CHANGE` to a
+smaller constant seems appropiate.
+
+**The second week was full of progress!**
+
+### Week 03: TODO -> 26.10.2026 - 02.11.2026 (European dates)
+*Aici e buba: TODO*
