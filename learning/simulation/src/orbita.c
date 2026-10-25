@@ -16,6 +16,9 @@
 #define V_X_MOON_INITIAL (0.0)
 #define V_Y_MOON_INITIAL (1012.06)
 
+// Use this for explicit Euler method.
+#define HALF_MINUTE (30.0)
+// Use this for semi-implicit Euler method.
 #define ONE_MINUTE (60.0)
 
 // Use these for numeric analysis.
@@ -23,7 +26,7 @@
 #define ONE_DAY (ONE_HOUR * 24.0)
 #define ONE_WEEK (ONE_DAY * 7.0)
 
-#define TIME_CHANGE ONE_HOUR
+#define TIME_CHANGE HALF_MINUTE
 
 #define MOON_PERIOD (2357500)
 
@@ -63,15 +66,15 @@ int main(void)
 		double a_x_moon = - GRAVITATIONAL_CT * EARTH_MASS * s * x_change;
 		double a_y_moon = - GRAVITATIONAL_CT * EARTH_MASS * s * y_change;
 
-		v_x_earth += a_x_earth * TIME_CHANGE;
-		v_y_earth += a_y_earth * TIME_CHANGE;
-		v_x_moon += a_x_moon * TIME_CHANGE;
-		v_y_moon += a_y_moon * TIME_CHANGE;
-
 		x_earth += v_x_earth * TIME_CHANGE;
 		y_earth += v_y_earth * TIME_CHANGE;
 		x_moon += v_x_moon * TIME_CHANGE;
 		y_moon += v_y_moon * TIME_CHANGE;
+
+		v_x_earth += a_x_earth * TIME_CHANGE;
+		v_y_earth += a_y_earth * TIME_CHANGE;
+		v_x_moon += a_x_moon * TIME_CHANGE;
+		v_y_moon += a_y_moon * TIME_CHANGE;
 
 		printf("Earth data:\n");
 		printf("Position: (x, y) = (%e, %e)\n", x_earth, y_earth);
