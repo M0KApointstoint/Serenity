@@ -16,9 +16,7 @@
 #define V_X_MOON_INITIAL (0.0)
 #define V_Y_MOON_INITIAL (1012.06)
 
-// Use this for explicit Euler method.
 #define HALF_MINUTE (30.0)
-// Use this for semi-implicit Euler method.
 #define ONE_MINUTE (60.0)
 
 // Use these for numeric analysis.
@@ -69,7 +67,7 @@ void compute_accelerations(const struct body *bodies_arr, size_t nr_bodies,
 	}
 }
 
-void write_to_csv(FILE *f, struct body *bodies_arr, size_t nr_bodies)
+void write_to_csv(FILE *f, const struct body *bodies_arr, size_t nr_bodies)
 {
 	fprintf(f, "%e,%e", bodies_arr[0].position_x, bodies_arr[0].position_y);
 	for (size_t i = 1; i < nr_bodies; ++i) {
@@ -102,11 +100,15 @@ int main(void)
 	double accelerations_x_arr[nr_bodies];
 	double accelerations_y_arr[nr_bodies];
 
-	FILE *f = fopen("./points.csv", "w"); // No return value check :)
+	FILE *f = fopen("./points.csv", "w");
+	if (!f) {
+		perror("./points.csv");
+		return -1;
+	}
 
 	write_to_csv(f, bodies_arr, nr_bodies);
 
-	for (size_t n = 0; n < NR_STEPS; ++n) {
+	for (size_t step = 0; step < NR_STEPS; ++step) {
 		compute_accelerations(bodies_arr, nr_bodies, accelerations_x_arr, accelerations_y_arr);
 
 		for (size_t i = 0; i < nr_bodies; ++i) {
