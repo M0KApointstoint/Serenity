@@ -1,20 +1,7 @@
 #include <stdio.h>
 #include <stddef.h>
 #include <math.h>
-
-#define GRAVITATIONAL_CT (6.674e-11)
-#define EARTH_MASS (5.972e24)
-#define MOON_MASS (7.342e22)
-
-#define X_EARTH_INITIAL (-4.668e6)
-#define Y_EARTH_INITIAL (0.0)
-#define X_MOON_INITIAL (3.797e8)
-#define Y_MOON_INITIAL (0.0)
-
-#define V_X_EARTH_INITIAL (0.0)
-#define V_Y_EARTH_INITIAL (-12.44)
-#define V_X_MOON_INITIAL (0.0)
-#define V_Y_MOON_INITIAL (1012.06)
+#include "planets.h"
 
 #define HALF_MINUTE (30.0)
 #define ONE_MINUTE (60.0)
@@ -53,13 +40,13 @@ void compute_accelerations(const struct body *bodies_arr, size_t nr_bodies,
 			// delta y.
 			double y_change_j_i = bodies_arr[j].position_y - bodies_arr[i].position_y;
 
-			double r = x_change_j_i * x_change_j_i;
-			r += y_change_j_i * y_change_j_i;
-			r = sqrt(r); // r = sqrt((x ^ 2) + (y ^ 2)).
+			double r_j_i = x_change_j_i * x_change_j_i;
+			r_j_i += y_change_j_i * y_change_j_i;
+			r_j_i = sqrt(r_j_i); // r_j_i = sqrt((x ^ 2) + (y ^ 2)).
 		
-			double s = 1.0 / r;
-			s /= r;
-			s /= r; // s = 1 / (r ^ 3).
+			double s = 1.0 / r_j_i;
+			s /= r_j_i;
+			s /= r_j_i; // s = 1 / (r_j_i ^ 3).
 
 			accelerations_x_arr[i] += GRAVITATIONAL_CT * bodies_arr[j].mass * s * x_change_j_i;
 			accelerations_y_arr[i] += GRAVITATIONAL_CT * bodies_arr[j].mass * s * y_change_j_i;
