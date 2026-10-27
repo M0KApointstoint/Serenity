@@ -3,14 +3,15 @@ import matplotlib.pyplot as plt
 
 points_matrix = np.loadtxt("points.csv", delimiter=",") / 1e3 # Convert to km.
 
-x_earth_list = points_matrix[:, 0]
-y_earth_list = points_matrix[:, 1]
-x_moon_list = points_matrix[:, 2]
-y_moon_list = points_matrix[:, 3]
+nr_bodies = points_matrix.shape[1] // 2
 
 plt.figure(figsize=(10, 10))
-plt.plot(x_earth_list, y_earth_list, label="Earth")
-plt.plot(x_moon_list, y_moon_list, label="Moon")
+
+for i in range(nr_bodies):
+    body_x_coordinates_arr = points_matrix[:, 2 * i]
+    body_y_coordinates_arr = points_matrix[:, 2 * i + 1]
+    plt.plot(body_x_coordinates_arr, body_y_coordinates_arr, label=f"Body {i}")
+
 plt.gca().set_aspect("equal")
 plt.xlabel("x (km)")
 plt.ylabel("y (km)")
