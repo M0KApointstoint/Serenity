@@ -227,7 +227,7 @@ Therefore we stick to different structures.
 
 *Generalizing the code took some time...*
 
-- After the first session was done I had `Claude` review the repoistory and
+- After the first session was done I had `Claude` review the repository and
 therefore did some refinements on the `README` and `C` code. Then I started
 generalizing the `Python` code.
 
@@ -237,4 +237,22 @@ Even if it was not in the original `HTML` plan, I took some design decisions:
 - 2. Modularize the `C` code;
 - 3. Update the `HTML` plan.
 
-*The first part took some hours...*
+*The first and second part took some hours...*
+
+**I know that the Sun is not a planet.**
+
+- Finally, after *some* time, I managed to restructure the code. I do think
+that now everything is more readable even if it could have worked nicely
+without all of this struggle.
+
+- The build now takes **A LOT** of space, around 2 GiB, so need to be careful
+here.
+
+- Anyways, I am glad that I finished the third week pretty early, the next ones
+are gonna be full of *assignments* and *exams* so hopefully I will be able to
+stick to the plan.
+
+- I do feel some nostalgia to the old code, so much simpler, innocent, maybe I
+will restructure the directories as well to show the progress more explictly.
+
+**The third week was full of progress!**

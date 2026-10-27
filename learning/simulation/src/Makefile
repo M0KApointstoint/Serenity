@@ -5,5 +5,4 @@ sim: main.c planets.h planets.c csv_handler.h csv_handler.c
 	gcc -Wall -Wextra -O3 main.c planets.c csv_handler.c -o sim -lm
 
 clean:
-	rm -f orbit.png points.csv orbit
-	
+	rm -f orbit.png points.csv sim
