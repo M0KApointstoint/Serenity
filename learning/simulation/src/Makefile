@@ -1,8 +1,8 @@
-orbita.png: orbita plot_orbit.py
-	./orbita && python3 plot_orbit.py && xdg-open orbita.png
+orbit.png: sim plot_orbit.py
+	./sim && python3 plot_orbit.py && xdg-open orbita.png
 
-orbita: orbita.c planets.h
-	gcc -Wall -Wextra -O3 orbita.c -o orbita -lm
+sim: main.c planets.h planets.c csv_handler.h csv_handler.c
+	gcc -Wall -Wextra -O3 main.c planets.c csv_handler.c -o sim -lm
 
 clean:
 	rm -f orbita.png points.csv orbita

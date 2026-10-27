@@ -54,7 +54,7 @@ void set_initial_conditions(struct body *bodies_arr, size_t nr_bodies)
 	// Set sun initial velocity.
 	bodies_arr[0].velocity_x = 0.0;
 	bodies_arr[0].velocity_y = 0.0;
-	for (size_t i = 2; i < nr_bodies; ++i) {
+	for (size_t i = 1; i < nr_bodies; ++i) {
 		bodies_arr[0].velocity_y -= bodies_arr[i].mass * omegas[i];
 	}
 	bodies_arr[0].velocity_y /= center_of_mass_mass;
