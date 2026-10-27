@@ -160,6 +160,14 @@ starts to become hardcore.*
 - The current work flow does not cut it. When more bodies will come into play,
 the `CSV` file becomes too big because of computationally unnecessary text.
 
+- Supposing we have `3` bodies, the `CSV` file will have the following
+format for a fixed step. For each step a new line with the same formatting
+appears:
+
+```text
+x0,y0,x1,y1,x2,y2
+```
+
 - Everything will now be handled from the `C` code directly, therefore that
 little `Bash` script that I wrote becomes obsolete `:(`. Need to change the
 `Makefile` as well now. After that, the `Python` code needs to be updated too.
@@ -220,4 +228,11 @@ Therefore we stick to different structures.
 *Generalizing the code took some time...*
 
 - After the first session was done I had `Claude` review the repoistory and
-therefore did some refinements on the `README` and `C` code.
+therefore did some refinements on the `README` and `C` code. Then I started
+generalizing the `Python` code.
+
+Even if it was not in the original `HTML` plan, I took some design decisions:
+
+- 1. Update the theoretical paper together with the `LaTeX` code;
+- 2. Modularize the `C` code;
+- 3. Update the `HTML` plan.
