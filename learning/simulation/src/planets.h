@@ -21,6 +21,18 @@
 #define MARS_SEMI_MAJOR_AXIS_SUN (2.279e11)
 #define JUPITER_SEMI_MAJOR_AXIS_SUN (7.785e11)
 
+#define HALF_MINUTE (30.0)
+#define ONE_MINUTE (60.0)
+#define ONE_HOUR (ONE_MINUTE * 60.0)
+#define ONE_DAY (ONE_HOUR * 24.0)
+#define ONE_WEEK (ONE_DAY * 7.0)
+
+#define TIME_CHANGE HALF_MINUTE
+
+#define JUPITER_PERIOD (4333 * ONE_DAY)
+
+#define NR_STEPS ((size_t)(JUPITER_PERIOD / TIME_CHANGE))
+
 struct body {
 	double position_x;
 	double position_y;
@@ -30,16 +42,5 @@ struct body {
 };
 
 void set_initial_conditions(struct body *bodies_arr, size_t nr_bodies);
-
-// Deprecated. Can be used for older versions of the code.
-#define MOON_MASS (7.342e22)
-#define X_EARTH_INITIAL (-4.668e6)
-#define Y_EARTH_INITIAL (0.0)
-#define X_MOON_INITIAL (3.797e8)
-#define Y_MOON_INITIAL (0.0)
-#define V_X_EARTH_INITIAL (0.0)
-#define V_Y_EARTH_INITIAL (-12.44)
-#define V_X_MOON_INITIAL (0.0)
-#define V_Y_MOON_INITIAL (1012.06)
 
 #endif

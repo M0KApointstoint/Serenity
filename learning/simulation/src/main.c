@@ -4,20 +4,6 @@
 #include "planets.h"
 #include "csv_handler.h"
 
-#define HALF_MINUTE (30.0)
-#define ONE_MINUTE (60.0)
-
-// Use these for numeric analysis.
-#define ONE_HOUR (ONE_MINUTE * 60.0)
-#define ONE_DAY (ONE_HOUR * 24.0)
-#define ONE_WEEK (ONE_DAY * 7.0)
-
-#define TIME_CHANGE HALF_MINUTE
-
-#define MOON_PERIOD (2357500)
-
-#define NR_STEPS ((size_t)(MOON_PERIOD / TIME_CHANGE))
-
 void compute_accelerations(const struct body *bodies_arr, size_t nr_bodies,
 						   double *accelerations_x_arr, double *accelerations_y_arr)
 {
