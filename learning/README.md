@@ -236,3 +236,5 @@ Even if it was not in the original `HTML` plan, I took some design decisions:
 - 1. Update the theoretical paper together with the `LaTeX` code;
 - 2. Modularize the `C` code;
 - 3. Update the `HTML` plan.
+
+*The first part took some hours...*
