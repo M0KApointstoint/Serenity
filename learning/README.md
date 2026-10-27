@@ -34,6 +34,9 @@ it's easy to understand and **implement from scratch**. I wrote the code from
 scratch following along the paper, it comes out nicely. The review was done
 using `AI`, I believe that is necessary in order to construct *quality code*.
 
+**This way of building the project is deprecated.**
+*See end of the second week for more information on building the project.*
+
 - Here is how you run the code on a typical system that has a `Linux` kernel
 with `GNU` tools:
 
@@ -49,7 +52,7 @@ $ ./orbita
 
 ### Week 02:
 
-*This session will be done in two days probably.*
+*This session was done in the course of three days.*
 
 **Here are the core points of the week that were achieved following the plan:**
 
@@ -108,7 +111,7 @@ $ make clean # Optional.
 - **First**, it's nice to see what happens if we change the `TIME_CHANGE` constant
 at the beginning of the `C` code. It makes sense to get big errors if it's
 too big. I left some possible values to play with by changing the `TIME_CHANGE`
-defintion.
+definition.
 
 - I panicked because of a `donut` appearance for the `ONE_DAY` value of
 `TIME_CHANGE`, that happens because the trajectory of each body was overlapping
@@ -137,15 +140,17 @@ first.
 - After changing the code, it turns out that the simulation looks a little bit
 **worse** than before, this is important to note. I am pretty sure that if I
 take some time to understand *why* this happens, it will make sense. My feeling
-is that the problem is related to the initial coordonates and the fact that we
+is that the problem is related to the initial coordinates and the fact that we
 want a circular trajectory.
 
 - Since the simulation is not as powerful now, changing `TIME_CHANGE` to a
-smaller constant seems appropiate.
+smaller constant seems appropriate.
 
 **The second week was full of progress!**
 
-### Week 03: TODO -> 26.10.2026 - 02.11.2026 (European dates)
+### Week 03:
+
+*This session was done in the course of two days.*
 
 *Off to an earlier start on Sunday before the week begins because the semester
 starts to become hardcore.*
@@ -195,7 +200,7 @@ int main(void)
 
 ```
 
-*Compile and run! Assembly knowledge does not dissapoint!*
+*Compile and run! Assembly knowledge does not disappoint!*
 
 - After this comes an important design decision:
 
@@ -213,3 +218,6 @@ objects:
 Therefore we stick to different structures.
 
 *Generalizing the code took some time...*
+
+- After the first session was done I had `Claude` review the repoistory and
+therefore did some refinements on the `README` and `C` code.
