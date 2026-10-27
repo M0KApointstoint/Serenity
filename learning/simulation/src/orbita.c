@@ -36,20 +36,20 @@ void compute_accelerations(const struct body *bodies_arr, size_t nr_bodies,
 				continue;
 			}
 			// delta x.
-			double x_change_j_i = bodies_arr[j].position_x - bodies_arr[i].position_x;
+			double x_change_i_j = bodies_arr[j].position_x - bodies_arr[i].position_x;
 			// delta y.
-			double y_change_j_i = bodies_arr[j].position_y - bodies_arr[i].position_y;
+			double y_change_i_j = bodies_arr[j].position_y - bodies_arr[i].position_y;
 
-			double r_j_i = x_change_j_i * x_change_j_i;
-			r_j_i += y_change_j_i * y_change_j_i;
-			r_j_i = sqrt(r_j_i); // r_j_i = sqrt((x ^ 2) + (y ^ 2)).
+			double r_i_j = x_change_i_j * x_change_i_j;
+			r_i_j += y_change_i_j * y_change_i_j;
+			r_i_j = sqrt(r_i_j); // r_i_j = sqrt((x ^ 2) + (y ^ 2)).
 		
-			double s = 1.0 / r_j_i;
-			s /= r_j_i;
-			s /= r_j_i; // s = 1 / (r_j_i ^ 3).
+			double s = 1.0 / r_i_j;
+			s /= r_i_j;
+			s /= r_i_j; // s = 1 / (r_i_j ^ 3).
 
-			accelerations_x_arr[i] += GRAVITATIONAL_CT * bodies_arr[j].mass * s * x_change_j_i;
-			accelerations_y_arr[i] += GRAVITATIONAL_CT * bodies_arr[j].mass * s * y_change_j_i;
+			accelerations_x_arr[i] += GRAVITATIONAL_CT * bodies_arr[j].mass * s * x_change_i_j;
+			accelerations_y_arr[i] += GRAVITATIONAL_CT * bodies_arr[j].mass * s * y_change_i_j;
 		}
 	}
 }
