@@ -1,16 +1,16 @@
 #include <stdio.h>
 #include <stddef.h>
-#include <math.h>
 #include "planets.h"
 #include "csv_handler.h"
+#include "physics.h"
 
-void compute_accelerations(const struct body *bodies_arr, size_t nr_bodies,
+void compute_accelerations(const struct body *bodies_arr,
 						   double *accelerations_x_arr, double *accelerations_y_arr)
 {
-	for (size_t i = 0; i < nr_bodies; ++i) {
+	for (size_t i = 0; i < NR_BODIES; ++i) {
 		accelerations_x_arr[i] = 0;
 		accelerations_y_arr[i] = 0;
-		for (size_t j = 0; j < nr_bodies; ++j) {
+		for (size_t j = 0; j < NR_BODIES; ++j) {
 			if (j == i) {
 				continue;
 			}
@@ -19,10 +19,8 @@ void compute_accelerations(const struct body *bodies_arr, size_t nr_bodies,
 			// delta y.
 			double y_change_i_j = bodies_arr[j].position_y - bodies_arr[i].position_y;
 
-			double r_i_j = x_change_i_j * x_change_i_j;
-			r_i_j += y_change_i_j * y_change_i_j;
-			r_i_j = sqrt(r_i_j); // r_i_j = sqrt((x ^ 2) + (y ^ 2)).
-		
+			double r_i_j = magnitude_vector_2d(x_change_i_j, y_change_i_j);
+
 			double s = 1.0 / r_i_j;
 			s /= r_i_j;
 			s /= r_i_j; // s = 1 / (r_i_j ^ 3).
@@ -42,24 +40,23 @@ int main(void)
 	}
 	
 	struct body bodies_arr[NR_BODIES];
-	size_t nr_bodies = sizeof(bodies_arr) / sizeof(*bodies_arr);
-	set_initial_conditions(bodies_arr, nr_bodies);
+	set_initial_conditions(bodies_arr);
 
 	// a[i] is acceleration of body i.
-	double accelerations_x_arr[nr_bodies];
-	double accelerations_y_arr[nr_bodies];
+	double accelerations_x_arr[NR_BODIES];
+	double accelerations_y_arr[NR_BODIES];
 
-	write_to_csv(f, bodies_arr, nr_bodies);
+	write_to_csv(f, bodies_arr, NR_BODIES);
 	for (size_t step = 0; step < NR_STEPS; ++step) {
-		compute_accelerations(bodies_arr, nr_bodies, accelerations_x_arr, accelerations_y_arr);
-		for (size_t i = 0; i < nr_bodies; ++i) {
+		compute_accelerations(bodies_arr, accelerations_x_arr, accelerations_y_arr);
+		for (size_t i = 0; i < NR_BODIES; ++i) {
 			bodies_arr[i].position_x += bodies_arr[i].velocity_x * TIME_CHANGE;
 			bodies_arr[i].position_y += bodies_arr[i].velocity_y * TIME_CHANGE;
 			bodies_arr[i].velocity_x += accelerations_x_arr[i] * TIME_CHANGE;
 			bodies_arr[i].velocity_y += accelerations_y_arr[i] * TIME_CHANGE; 
 		}
 		if (!(step % 1000)) {
-			write_to_csv(f, bodies_arr, nr_bodies);
+			write_to_csv(f, bodies_arr, NR_BODIES);
 		}
 	}
 	fclose(f);
