@@ -5,7 +5,7 @@
 
 #define GRAVITATIONAL_CT (6.674e-11)
 
-#define NR_PLANETS (6)
+#define NR_BODIES (6)
 
 #define SUN_MASS (1.989e30)
 #define MERCURY_MASS (3.301e23)

@@ -4,7 +4,7 @@
 
 void set_initial_conditions(struct body *bodies_arr, size_t nr_bodies)
 {
-    const double masses_arr[NR_PLANETS] = {
+    const double masses_arr[NR_BODIES] = {
         SUN_MASS,
         MERCURY_MASS,
         VENUS_MASS,
@@ -22,7 +22,7 @@ void set_initial_conditions(struct body *bodies_arr, size_t nr_bodies)
 		center_of_mass_mass += bodies_arr[i].mass;
 	}
 
-    const double semi_major_axes_sun[NR_PLANETS] = {
+    const double semi_major_axes_sun[NR_BODIES] = {
         SUN_SEMI_MAJOR_AXIS_SUN,
         MERCURY_SEMI_MAJOR_AXIS_SUN,
         VENUS_SEMI_MAJOR_AXIS_SUN,

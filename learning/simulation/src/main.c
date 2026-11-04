@@ -41,7 +41,7 @@ int main(void)
 		return -1;
 	}
 	
-	struct body bodies_arr[6]; // 6 Bodies for now.
+	struct body bodies_arr[NR_BODIES];
 	size_t nr_bodies = sizeof(bodies_arr) / sizeof(*bodies_arr);
 	set_initial_conditions(bodies_arr, nr_bodies);
 
