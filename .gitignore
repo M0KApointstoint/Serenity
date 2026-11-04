@@ -1,5 +1,2 @@
-sim
-*.html
-*.csv
-*.png
+/learning/simulation/build
 
