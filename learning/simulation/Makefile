@@ -12,7 +12,7 @@ $(IMAGE): $(BUILD_DIR)/$(EXEC) $(SRC_DIR)/plot_orbit.py
 
 $(BUILD_DIR)/$(EXEC): $(SRC_DIR)
 	mkdir $(BUILD_DIR)
-	$(CC) $(CFLAGS) $(SRC_DIR)*.c -o $(BUILD_DIR)/$(EXEC) -lm
+	$(CC) $(CFLAGS) $(SRC_DIR)/*.c -o $(BUILD_DIR)/$(EXEC) -lm
 
 .PHONY: clean
 clean:
