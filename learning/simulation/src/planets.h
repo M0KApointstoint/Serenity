@@ -41,6 +41,6 @@ struct body {
 	double mass;
 };
 
-void set_initial_conditions(struct body *bodies_arr, size_t nr_bodies);
+void set_initial_conditions(struct body *bodies_arr);
 
 #endif

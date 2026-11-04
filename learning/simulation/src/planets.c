@@ -2,7 +2,7 @@
 #include <math.h>
 #include "planets.h"
 
-void set_initial_conditions(struct body *bodies_arr, size_t nr_bodies)
+void set_initial_conditions(struct body *bodies_arr)
 {
     const double masses_arr[NR_BODIES] = {
         SUN_MASS,
@@ -14,11 +14,11 @@ void set_initial_conditions(struct body *bodies_arr, size_t nr_bodies)
     };
 
 	// Set masses and center of mass.
-	for (size_t i = 0; i < nr_bodies; ++i) {
+	for (size_t i = 0; i < NR_BODIES; ++i) {
 		bodies_arr[i].mass = masses_arr[i];
 	}
 	double center_of_mass_mass = 0.0;
-	for (size_t i = 0; i < nr_bodies; ++i) {
+	for (size_t i = 0; i < NR_BODIES; ++i) {
 		center_of_mass_mass += bodies_arr[i].mass;
 	}
 
@@ -34,33 +34,34 @@ void set_initial_conditions(struct body *bodies_arr, size_t nr_bodies)
 	// Set sun initial coordinates.
 	bodies_arr[0].position_x = 0.0;
 	bodies_arr[0].position_y = 0.0;
-	for (size_t i = 1; i < nr_bodies; ++i) {
+	for (size_t i = 1; i < NR_BODIES; ++i) {
 		bodies_arr[0].position_x -= bodies_arr[i].mass * semi_major_axes_sun[i];
 	}
 	bodies_arr[0].position_x /= center_of_mass_mass;
 
 	// Set planets initial coordinates.
-	for (size_t i = 1; i < nr_bodies; ++i) {
+	for (size_t i = 1; i < NR_BODIES; ++i) {
 		bodies_arr[i].position_x = bodies_arr[0].position_x + semi_major_axes_sun[i];
 		bodies_arr[i].position_y = 0.0;
 	}
 
 	// Set relative velocities to sun in isolated scenario.
-	double omegas[nr_bodies];
-	for (size_t i = 1; i < nr_bodies; ++i) {
+	double omegas[NR_BODIES];
+	omegas[0] = 0.0;
+	for (size_t i = 1; i < NR_BODIES; ++i) {
 		omegas[i] = sqrt(GRAVITATIONAL_CT * (bodies_arr[0].mass + bodies_arr[i].mass) / semi_major_axes_sun[i]);
 	}
 
 	// Set sun initial velocity.
 	bodies_arr[0].velocity_x = 0.0;
 	bodies_arr[0].velocity_y = 0.0;
-	for (size_t i = 1; i < nr_bodies; ++i) {
+	for (size_t i = 1; i < NR_BODIES; ++i) {
 		bodies_arr[0].velocity_y -= bodies_arr[i].mass * omegas[i];
 	}
 	bodies_arr[0].velocity_y /= center_of_mass_mass;
 
 	// Set other planets initial velocities.
-	for (size_t i = 1; i < nr_bodies; ++i) {
+	for (size_t i = 1; i < NR_BODIES; ++i) {
 		bodies_arr[i].velocity_x = 0.0;
 		bodies_arr[i].velocity_y = bodies_arr[0].velocity_y + omegas[i];
 	}
