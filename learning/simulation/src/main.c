@@ -58,7 +58,9 @@ int main(void)
 			bodies_arr[i].velocity_x += accelerations_x_arr[i] * TIME_CHANGE;
 			bodies_arr[i].velocity_y += accelerations_y_arr[i] * TIME_CHANGE; 
 		}
-		write_to_csv(f, bodies_arr, nr_bodies);
+		if (!(step % 1000)) {
+			write_to_csv(f, bodies_arr, nr_bodies);
+		}
 	}
 	fclose(f);
 	return 0;
