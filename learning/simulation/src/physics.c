@@ -49,3 +49,31 @@ double total_energy_system(struct body *body_arr)
 {
     return total_kinetic_energy(body_arr) + total_gravitational_potential_energy(body_arr);
 }
+
+double momentum_x(struct body *body_adr)
+{
+    return (body_adr->mass) * (body_adr->velocity_x);
+}
+
+double momentum_y(struct body *body_adr)
+{
+    return (body_adr->mass) * (body_adr->velocity_y);
+}
+
+double total_momentum_x(struct body *body_arr)
+{
+    double total = 0.0;
+    for (size_t i = 0; i < NR_BODIES; ++i) {
+        total += momentum_x(body_arr + i);
+    }
+    return total;
+}
+
+double total_momentum_y(struct body *body_arr)
+{
+    double total = 0.0;
+    for (size_t i = 0; i < NR_BODIES; ++i) {
+        total += momentum_y(body_arr + i);
+    }
+    return total;
+}
