@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 AU = 149597870700 # One astronomical unit in meters.
-points_matrix = np.loadtxt("points.csv", delimiter=",") / AU
+points_matrix = np.loadtxt("./build/points.csv", delimiter=",") / AU
 nr_bodies = points_matrix.shape[1] // 2
 
 plt.figure(figsize=(10, 10))
@@ -18,4 +18,4 @@ plt.gca().set_aspect("equal")
 plt.xlabel("x (AU)")
 plt.ylabel("y (AU)")
 plt.legend()
-plt.savefig("orbit.png", dpi=150)
+plt.savefig("./build/orbit.png", dpi=150)
