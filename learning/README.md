@@ -281,7 +281,32 @@ unitialized `omegas`.
 
 ```bash
 $ tree
-[Aici e buba: TODO:)]
+.
+├── hardware
+├── learning
+│   ├── docs
+│   │   ├── doua-corpuri.pdf
+│   │   └── doua-corpuri.tex
+│   ├── README.md
+│   └── simulation
+│       ├── build
+│       │   ├── orbit.png
+│       │   ├── points.csv
+│       │   └── sim
+│       ├── Makefile
+│       └── src
+│           ├── csv_handler.c
+│           ├── csv_handler.h
+│           ├── main.c
+│           ├── planets.c
+│           ├── planets.h
+│           └── plot_orbit.py
+└── README.md
 $
+```
+
+- Also, this site is awesome for making the `Makefile` better:
+[Makefile Tutorial By Example](https://makefiletutorial.com/).
 
 Now we can get back to the main objectives.
+
