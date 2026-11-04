@@ -16,4 +16,4 @@ $(BUILD_DIR)/$(EXEC): $(SRC_DIR)
 
 .PHONY: clean
 clean:
-	rm -rf $(SRC_DIR)
+	rm -rf $(BUILD_DIR)
