@@ -35,9 +35,9 @@ void compute_accelerations(const struct body *bodies_arr, size_t nr_bodies,
 
 int main(void)
 {
-	FILE *f = fopen("./points.csv", "w");
+	FILE *f = fopen("./build/points.csv", "w");
 	if (!f) {
-		perror("./points.csv");
+		perror("./build/points.csv");
 		return -1;
 	}
 	
