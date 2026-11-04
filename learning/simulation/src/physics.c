@@ -25,29 +25,29 @@ double gravitational_potential_energy(struct body *body_1_adr, struct body *body
     return GRAVITATIONAL_CT * (body_1_adr->mass) * (body_2_adr->mass) / distance_bodies;
 }
 
-double total_kinetic_energy(struct body *body_arr)
+double total_kinetic_energy(struct body *bodies_arr)
 {
     double total = 0.0;
     for (size_t i = 0; i < NR_BODIES; ++i) {
-        total += kinetic_energy(body_arr + i);
+        total += kinetic_energy(bodies_arr + i);
     }
     return total;
 }
 
-double total_gravitational_potential_energy(struct body *body_arr)
+double total_gravitational_potential_energy(struct body *bodies_arr)
 {
     double total = 0.0;
     for (size_t i = 0; i < NR_BODIES; ++i) {
         for (size_t j = 0; j < i; ++j) {
-            total -= gravitational_potential_energy(body_arr + i, body_arr + j);
+            total -= gravitational_potential_energy(bodies_arr + i, bodies_arr + j);
         }
     }
     return total;
 }
 
-double total_energy_system(struct body *body_arr)
+double total_energy_system(struct body *bodies_arr)
 {
-    return total_kinetic_energy(body_arr) + total_gravitational_potential_energy(body_arr);
+    return total_kinetic_energy(bodies_arr) + total_gravitational_potential_energy(bodies_arr);
 }
 
 double momentum_x(struct body *body_adr)
@@ -60,20 +60,25 @@ double momentum_y(struct body *body_adr)
     return (body_adr->mass) * (body_adr->velocity_y);
 }
 
-double total_momentum_x(struct body *body_arr)
+double total_momentum_x(struct body *bodies_arr)
 {
     double total = 0.0;
     for (size_t i = 0; i < NR_BODIES; ++i) {
-        total += momentum_x(body_arr + i);
+        total += momentum_x(bodies_arr + i);
     }
     return total;
 }
 
-double total_momentum_y(struct body *body_arr)
+double total_momentum_y(struct body *bodies_arr)
 {
     double total = 0.0;
     for (size_t i = 0; i < NR_BODIES; ++i) {
-        total += momentum_y(body_arr + i);
+        total += momentum_y(bodies_arr + i);
     }
     return total;
+}
+
+double relative_change(double initial, double final)
+{
+    return (final - initial) / initial;
 }
