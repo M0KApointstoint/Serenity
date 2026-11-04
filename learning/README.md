@@ -308,5 +308,14 @@ $
 - Also, this site is awesome for making the `Makefile` better:
 [Makefile Tutorial By Example](https://makefiletutorial.com/).
 
-Now we can get back to the main objectives.
+There are many things to be solved but I would rather start implementing energy
+into the project now.
 
+- For now we will work in [`physics.c`](./simulation/src/physics.c). This file
+is useful for computing important physics quantities.
+
+- While implementing, I have concluded that having `NR_BODIES` is enough and
+there is no need for a separate variable `nr_bodies` that we extract from the
+structures array which is hardcoded anyway.
+
+- After implementing energy and momentum I tested their **conservation laws**.
