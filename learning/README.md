@@ -239,8 +239,6 @@ Even if it was not in the original `HTML` plan, I took some design decisions:
 
 *The first and second part took some hours...*
 
-**I know that the Sun is not a planet.**
-
 - Finally, after *some* time, I managed to restructure the code. I do think
 that now everything is more readable even if it could have worked nicely
 without all of this struggle.
@@ -255,4 +253,35 @@ stick to the plan.
 - I do feel some nostalgia to the old code, so much simpler, innocent, maybe I
 will restructure the directories as well to show the progress more explictly.
 
+*Future note: The details of each module is explained in the fourth week.*
+
 **The third week was full of progress!**
+
+### Week 04:
+
+*This semester is becoming harder and harder...*
+
+- After some `Claude` review I did some things before sticking to the original
+plan.
+
+- The `CSV` does not have to be so big for the simulation to succeed. There can
+be less points and since we are working with actual **astronomical** units, the
+resulting curves will still look smooth.
+
+With this little fix the `CSV` shrinks to 2 MiB.
+
+**I know that the Sun is not a planet.**
+
+- Next, I modified the `NR_PLANETS` name to `NR_BODIES`.
+
+- For now I don't really care about that compilation warning regarding
+unitialized `omegas`.
+
+- This is a good moment to explain the *new* project structure:
+
+```bash
+$ tree
+[Aici e buba: TODO:)]
+$
+
+Now we can get back to the main objectives.
