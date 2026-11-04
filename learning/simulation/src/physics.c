@@ -14,7 +14,7 @@ double kinetic_energy(struct body *body_adr)
 {
     double velocity_squared = ((body_adr->velocity_x) * (body_adr->velocity_x)) +
                               ((body_adr->velocity_y) * (body_adr->velocity_y));
-    return (body_adr->mass) * velocity_squared;
+    return (body_adr->mass) * velocity_squared / 2.0;
 }
 
 double gravitational_potential_energy(struct body *body_1_adr, struct body *body_2_adr)
