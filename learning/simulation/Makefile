@@ -11,8 +11,11 @@ $(IMAGE): $(BUILD_DIR)/$(EXEC) $(SRC_DIR)/plot_orbit.py
 	$(BUILD_DIR)/$(EXEC) && python3 $(SRC_DIR)/plot_orbit.py && xdg-open $(BUILD_DIR)/$(IMAGE)
 
 $(BUILD_DIR)/$(EXEC): $(SRC_DIR)
-	mkdir $(BUILD_DIR)
+	mkdir -p $(BUILD_DIR)
 	$(CC) $(CFLAGS) $(SRC_DIR)/*.c -o $(BUILD_DIR)/$(EXEC) -lm
+
+tests: $(BUILD_DIR)/$(EXEC)
+	$(BUILD_DIR)/$(EXEC) && less $(BUILD_DIR)/tests.txt
 
 .PHONY: clean
 clean:
