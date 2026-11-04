@@ -234,14 +234,24 @@ generalizing the `Python` code.
 Even if it was not in the original `HTML` plan, I took some design decisions:
 
 - 1. Update the theoretical paper together with the `LaTeX` code;
-- 2. Modularize the `C` code;
-- 3. Update the `HTML` plan.
+- 2. Modularize the `C` code; *Future note: This continued in the fourth week.*
+- 3. Update the `HTML` plan. *Future note: This was done in the fourth week.*
 
-*The first and second part took some hours...*
+*The first and second part took some hours... Many hours.*
+
+- The new `PDF` applies better for the project now.
+
+*The old code was so innocent...*
 
 - Finally, after *some* time, I managed to restructure the code. I do think
 that now everything is more readable even if it could have worked nicely
 without all of this struggle.
+
+*Future note: I should have explained the things that I did here in more
+detail, but I didn't, because this took me so long that somehow the clock
+showed 3:00 AM, therefore:*
+
+**An in-depth analysis of the modularization is presented in the fourth week!**
 
 - The build now takes **A LOT** of space, around 2 GiB, so need to be careful
 here.
@@ -250,60 +260,32 @@ here.
 are gonna be full of *assignments* and *exams* so hopefully I will be able to
 stick to the plan.
 
-- I do feel some nostalgia to the old code, so much simpler, innocent, maybe I
-will restructure the directories as well to show the progress more explictly.
-
-*Future note: The details of each module is explained in the fourth week.*
-
 **The third week was full of progress!**
 
 ### Week 04:
 
 *This semester is becoming harder and harder...*
 
-- After some `Claude` review I did some things before sticking to the original
-plan.
+After a fresh `Claude` review here are some of the things I did in the first
+session:
 
 - The `CSV` does not have to be so big for the simulation to succeed. There can
 be less points and since we are working with actual **astronomical** units, the
 resulting curves will still look smooth.
 
-With this little fix the `CSV` shrinks to 2 MiB.
+With this little fix the `CSV` shrinks to 2 MiB:
 
-**I know that the Sun is not a planet.**
+```C
+if (!(step % 1000)) {
+    write_to_csv(f, bodies_arr, NR_BODIES);
+}
+```
 
-- Next, I modified the `NR_PLANETS` name to `NR_BODIES`.
+- **I know that the Sun is not a planet!**
+Therefore I modified the `NR_PLANETS` name to `NR_BODIES`.
 
 - For now I don't really care about that compilation warning regarding
 unitialized `omegas`.
-
-- This is a good moment to explain the *new* project structure:
-
-```bash
-$ tree
-.
-├── hardware
-├── learning
-│   ├── docs
-│   │   ├── doua-corpuri.pdf
-│   │   └── doua-corpuri.tex
-│   ├── README.md
-│   └── simulation
-│       ├── build
-│       │   ├── orbit.png
-│       │   ├── points.csv
-│       │   └── sim
-│       ├── Makefile
-│       └── src
-│           ├── csv_handler.c
-│           ├── csv_handler.h
-│           ├── main.c
-│           ├── planets.c
-│           ├── planets.h
-│           └── plot_orbit.py
-└── README.md
-$
-```
 
 - Also, this site is awesome for making the `Makefile` better:
 [Makefile Tutorial By Example](https://makefiletutorial.com/).
@@ -319,3 +301,62 @@ there is no need for a separate variable `nr_bodies` that we extract from the
 structures array which is hardcoded anyway.
 
 - After implementing energy and momentum I tested their **conservation laws**.
+
+- For energy it was quite simple, but the momentum looks weird:
+
+```bash
+$ make
+mkdir ./build
+gcc -Wall -Wextra -O3 ./src/*.c -o ./build/sim -lm
+./build/sim && python3 ./src/plot_orbit.py && xdg-open ./build/orbit.png
+Analyzing conservation of energy:
+Relative change of the total energy in the system is: -9.557302e-05.
+Analyzing conservation of momentum:
+Final total momentum on the x-axis in the system is: -6.494206e+18.
+Final total momentum on the y-axis in the system is: -7.201256e+18.
+$
+```
+
+- And here comes a point where I have to takes things for granted until I
+learn about how floating point works, therefore I will use the
+`relative_change()` function instead of just comparing to zero.
+Still, I will ignore momentum for now, since energy seems more friendly in
+this context.
+
+- Next, I wrote the code for testing conservation of energy and updated the
+`Makefile` so that now you can run the program like this:
+
+*Make sure you are in the right directory!*
+
+```bash
+make
+make tests
+make clean # Optional
+```
+
+- Finally, this is a good moment to explain the *new* project structure:
+
+```bash
+$ tree
+.
+├── learning
+│   ├── docs
+│   │   ├── doua-corpuri.pdf
+│   │   └── doua-corpuri.tex
+│   ├── README.md
+│   └── simulation
+│       ├── Makefile
+│       └── src
+│           ├── csv_handler.c
+│           ├── csv_handler.h
+│           ├── main.c
+│           ├── physics.c
+│           ├── physics.h
+│           ├── planets.c
+│           ├── planets.h
+│           └── plot_orbit.py
+└── README.md
+
+5 directories, 13 files
+$
+```
