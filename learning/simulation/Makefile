@@ -1,8 +1,19 @@
-orbit.png: sim plot_orbit.py
-	./sim && python3 plot_orbit.py && xdg-open orbit.png
+CC = gcc
+CFLAGS = -Wall -Wextra -O3
 
-sim: main.c planets.h planets.c csv_handler.h csv_handler.c
-	gcc -Wall -Wextra -O3 main.c planets.c csv_handler.c -o sim -lm
+IMAGE = orbit.png
+EXEC = sim
 
+BUILD_DIR = ./build
+SRC_DIR = ./src
+
+$(IMAGE): $(BUILD_DIR)/$(EXEC) $(SRC_DIR)/plot_orbit.py
+	$(BUILD_DIR)/$(EXEC) && python3 $(SRC_DIR)/plot_orbit.py && xdg-open $(BUILD_DIR)/$(IMAGE)
+
+$(BUILD_DIR)/$(EXEC): $(SRC_DIR)
+	mkdir $(BUILD_DIR)
+	$(CC) $(CFLAGS) $(SRC_DIR)*.c -o $(BUILD_DIR)/$(EXEC) -lm
+
+.PHONY: clean
 clean:
-	rm -f orbit.png points.csv sim
+	rm -rf $(SRC_DIR)
