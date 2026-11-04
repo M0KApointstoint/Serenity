@@ -38,6 +38,12 @@ int main(void)
 		perror("./build/points.csv");
 		return -1;
 	}
+	FILE *g = fopen("./build/tests.txt","w");
+	if (!g) {
+		fclose(f);
+		perror("./build/tests.txt");
+		return -1;
+	}
 
 	struct body bodies_arr[NR_BODIES];
 	set_initial_conditions(bodies_arr);
@@ -46,6 +52,7 @@ int main(void)
 	double accelerations_x_arr[NR_BODIES];
 	double accelerations_y_arr[NR_BODIES];
 
+	fprintf(g, "Analyzing conservation of energy!\n");
 	double energy_initial = total_energy_system(bodies_arr);
 
 	for (size_t step = 0; step < NR_STEPS; ++step) {
@@ -64,15 +71,14 @@ int main(void)
 	fclose(f);
 
 	double final_energy = total_energy_system(bodies_arr);
-	double momentum_x_final = total_momentum_x(bodies_arr);
-	double momentum_y_final = total_momentum_y(bodies_arr);
-
 	double energy_error = relative_change(energy_initial, final_energy);
 
-	printf("Analyzing conservation of energy:\n");
-	printf("Relative change of the total energy in the system is: %lf%%.\n", energy_error);
-	printf("Analyzing conservation of momentum:\n");
-	printf("Final total momentum on the x-axis in the system is: %lf.\n", momentum_x_final);
-	printf("Final total momentum on the y-axis in the system is: %lf.\n", momentum_y_final);
+	fprintf(g, "Relative change of the total energy in the system is: %e.\n", energy_error);
+	if (energy_error < 10e-4) {
+		fprintf(g, "PASSED!\n");
+	} else {
+		fprintf(g, "FAILED!\n");
+	}
+	fclose(g);
 	return 0;
 }
